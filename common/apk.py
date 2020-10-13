@@ -42,6 +42,7 @@ def set_package_permissions():
     if permission not in given_permissions:
       pm_grant("ai.comma.plus.offroad", "android.permission." + permission)
 
+  appops_set("ai.comma.plus.offroad", "SU", "allow")
   appops_set("ai.comma.plus.offroad", "WIFI_SCAN", "allow")
 
 def appops_set(package, op, mode):
