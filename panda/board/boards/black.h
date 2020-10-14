@@ -216,7 +216,7 @@ void black_init(void) {
   }
 
   // init multiplexer
-  can_set_obd(car_harness_status, true);
+  can_set_obd(car_harness_status, false);
 }
 
 const harness_configuration black_harness_config = {
