@@ -711,10 +711,12 @@ static void bb_ui_draw_debug(UIState *s)
                                                         scene->path_plan.getSteerRateCost(),
                                                         scene->path_plan.getSteerActuatorDelay());
 
-    int x = scene->viz_rect.x + (bdr_is * 2);
-    int y = scene->viz_rect.w - 40;
+    int x = scene->viz_rect.x + (bdr_s * 2);
+    int y = scene->viz_rect.bottom() - 24;
 
-    ui_draw_text(s->vg, x, y, str, 20 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_semibold);
+    nvgTextAlign(s->vg, NVG_ALIGN_LEFT | NVG_ALIGN_MIDDLE);
+
+    ui_draw_text(s->vg, x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_semibold);
 
     /*
 
