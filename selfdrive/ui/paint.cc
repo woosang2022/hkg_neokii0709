@@ -16,6 +16,25 @@ extern "C"{
 #include "paint.hpp"
 #include "sidebar.hpp"
 
+
+#define UI_FEATURE_DEBUG 1
+
+#define UI_FEATURE_LEFT 1
+#define UI_FEATURE_RIGHT 1
+
+#define UI_FEATURE_LEFT_REL_DIST 1
+#define UI_FEATURE_LEFT_REL_SPEED 1
+#define UI_FEATURE_LEFT_REAL_STEER 1
+#define UI_FEATURE_LEFT_DESIRED_STEER 1
+
+#define UI_FEATURE_RIGHT_CPU_TEMP 1
+#define UI_FEATURE_RIGHT_BATTERY_TEMP 1
+#define UI_FEATURE_RIGHT_BATTERY_LEVEL 1
+#define UI_FEATURE_RIGHT_GPS_ALTITUDE 1
+#define UI_FEATURE_RIGHT_GPS_ACCURACY 1
+
+
+
 #ifdef QCOM2
 const int vwp_w = 2160;
 #else
@@ -440,7 +459,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
   int bb_uom_dx =  (int)(bb_w /2 - uom_fontSize*2.5) ;
 
   //add visual radar relative distance
-  if (true) {
+  if (UI_FEATURE_LEFT_REL_DIST) {
     char val_str[16];
     char uom_str[6];
     NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
@@ -467,7 +486,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
   }
 
   //add visual radar relative speed
-  if (true) {
+  if (UI_FEATURE_LEFT_REL_SPEED) {
     char val_str[16];
     char uom_str[6];
     NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
@@ -502,7 +521,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
   }
 
   //add  steering angle
-  if (true) {
+  if (UI_FEATURE_LEFT_REAL_STEER) {
     char val_str[16];
     char uom_str[6];
     NVGcolor val_color = nvgRGBA(0, 255, 0, 200);
@@ -529,7 +548,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
   }
 
   //add  desired steering angle
-  if (true) {
+  if (UI_FEATURE_LEFT_DESIRED_STEER) {
     char val_str[16];
     char uom_str[6];
     NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
@@ -581,7 +600,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   int bb_uom_dx =  (int)(bb_w /2 - uom_fontSize*2.5) ;
 
   //add CPU temperature
-  if (true) {
+  if (UI_FEATURE_RIGHT_CPU_TEMP) {
         char val_str[16];
     char uom_str[6];
     NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
@@ -614,7 +633,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   }
 
    //add battery temperature
-  if (true) {
+  if (UI_FEATURE_RIGHT_BATTERY_TEMP) {
     char val_str[16];
     char uom_str[6];
     NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
@@ -638,7 +657,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   }
 
   //add battery level
-    if(true) {
+    if(UI_FEATURE_RIGHT_BATTERY_LEVEL) {
     char val_str[16];
     char uom_str[6];
     char bat_lvl[4] = "";
@@ -656,7 +675,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   }
 
   //add grey panda GPS altitude
-  if (true) {
+  if (UI_FEATURE_RIGHT_GPS_ALTITUDE) {
     char val_str[16];
     char uom_str[3];
     NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
@@ -671,7 +690,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   }
 
   //add grey panda GPS accuracy
-  if (true) {
+  if (UI_FEATURE_RIGHT_GPS_ACCURACY) {
     char val_str[16];
     char uom_str[3];
     NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
@@ -707,7 +726,7 @@ static void bb_ui_draw_debug(UIState *s)
 
     char str[1024];
 
-    snprintf(str, sizeof(str), "SR: %.2f, SRC: %.2f, SAD: %.2f", scene->path_plan.getSteerRatio(),
+    snprintf(str, sizeof(str), "SR: %.2f, SRC: %.3f, SAD: %.3f", scene->path_plan.getSteerRatio(),
                                                         scene->path_plan.getSteerRateCost(),
                                                         scene->path_plan.getSteerActuatorDelay());
 
@@ -786,9 +805,17 @@ static void bb_ui_draw_UI(UIState *s)
   const int bb_dmr_x = scene->viz_rect.x + scene->viz_rect.w - bb_dmr_w - (bdr_is * 2);
   const int bb_dmr_y = (box_y + (bdr_is * 1.5)) + 70;
 
+#if UI_FEATURE_LEFT
   bb_ui_draw_measures_left(s, bb_dml_x, bb_dml_y, bb_dml_w);
+#endif
+
+#if UI_FEATURE_RIGHT
   bb_ui_draw_measures_right(s, bb_dmr_x, bb_dmr_y, bb_dmr_w);
+#endif
+
+#if UI_FEATURE_DEBUG
   bb_ui_draw_debug(s);
+#endif
 }
 
 static void ui_draw_vision_maxspeed(UIState *s) {

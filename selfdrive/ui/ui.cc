@@ -188,8 +188,12 @@ void update_sockets(UIState *s) {
    {
     auto data = sm["gpsLocationExternal"].getGpsLocationExternal();
 
+    float verticalAccuracy = data.getVerticalAccuracy();
     scene.gpsAltitude = data.getAltitude();
     scene.gpsAccuracy = data.getAccuracy();
+
+    if(verticalAccuracy == 0 || verticalAccuracy > 100)
+        scene.gpsAltitude = 99.99
 
     if (scene.gpsAccuracy > 100)
       scene.gpsAccuracy = 99.99;
