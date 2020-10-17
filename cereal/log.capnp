@@ -873,6 +873,8 @@ struct PathPlan {
   autoLaneChangeTimer @21 :Int8;
 
   steerRatio @22 :Float32;
+  steerRateCost @23 :Float32;
+  steerActuatorDelay @24 :Float32;
 
   enum Desire {
     none @0;

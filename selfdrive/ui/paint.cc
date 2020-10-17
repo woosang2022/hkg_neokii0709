@@ -701,9 +701,22 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   nvgStroke(s->vg);
 }
 
-static void bb_ui_draw_L_Extra(UIState *s)
+static void bb_ui_draw_debug(UIState *s)
 {
     const UIScene *scene = &s->scene;
+
+    char str[1024];
+
+    snprintf(str, sizeof(str), "SR: %.2f, SRC: %.2f, SAD: %.2f", scene->path_plan.getSteerRatio(),
+                                                        scene->path_plan.getSteerRateCost(),
+                                                        scene->path_plan.getSteerActuatorDelay());
+
+    int x = scene->viz_rect.x + (bdr_is * 2);
+    int y = scene->viz_rect.w - 40;
+
+    ui_draw_text(s->vg, x, y, str, 20 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_semibold);
+
+    /*
 
     int w = 184;
     int x = (s->scene.viz_rect.x + (bdr_s*2)) + 220;
@@ -714,10 +727,7 @@ static void bb_ui_draw_L_Extra(UIState *s)
     nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
     const int text_x = x + (xo / 2) + (w / 2);
 
-    char str[256];
-
-    ///////////
-    // LQR
+    char str[1024];
 
     auto lqr = scene->controls_state.getLateralControlState().getLqrState();
 
@@ -730,7 +740,7 @@ static void bb_ui_draw_L_Extra(UIState *s)
 
     y += height;
     snprintf(str, sizeof(str), "O: %.3f, %.0f", lqr.getOutput(), scene->controls_state.getApplySteer());
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);*/
 
     //y += height;
     //snprintf(str, sizeof(str), "ST: %.3f", scene->car_state.getSteeringTorque());
@@ -745,13 +755,21 @@ static void bb_ui_draw_L_Extra(UIState *s)
     //        scene->liveParams.getAngleOffsetAverage());
     //ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
+    /*y += height;
+    snprintf(str, sizeof(str), "S Rate: %.2f", scene->path_plan.getSteerRatio());
+    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+
     y += height;
-    snprintf(str, sizeof(str), "SR: %.2f", scene->path_plan.getSteerRatio());
+    snprintf(str, sizeof(str), "S R Cost: %.2f", scene->path_plan.getSteerRateCost());
+    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+
+    y += height;
+    snprintf(str, sizeof(str), "S A Delay: %.2f", scene->path_plan.getSteerActuatorDelay());
     ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
 
     y += height;
     snprintf(str, sizeof(str), "Lane: %.2f, %.2f", scene->path_plan.getLProb(), scene->path_plan.getRProb());
-    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);
+    ui_draw_text(s->vg, text_x, y, str, 25 * 2.5, COLOR_WHITE_ALPHA(200), s->font_sans_regular);*/
 }
 
 
@@ -768,7 +786,7 @@ static void bb_ui_draw_UI(UIState *s)
 
   bb_ui_draw_measures_left(s, bb_dml_x, bb_dml_y, bb_dml_w);
   bb_ui_draw_measures_right(s, bb_dmr_x, bb_dmr_y, bb_dmr_w);
-  bb_ui_draw_L_Extra(s);
+  bb_ui_draw_debug(s);
 }
 
 static void ui_draw_vision_maxspeed(UIState *s) {
