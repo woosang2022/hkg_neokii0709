@@ -193,7 +193,7 @@ void update_sockets(UIState *s) {
     scene.gpsAccuracy = data.getAccuracy();
 
     if(verticalAccuracy == 0 || verticalAccuracy > 100)
-        scene.gpsAltitude = 99.99
+        scene.gpsAltitude = 99.99;
 
     if (scene.gpsAccuracy > 100)
       scene.gpsAccuracy = 99.99;
