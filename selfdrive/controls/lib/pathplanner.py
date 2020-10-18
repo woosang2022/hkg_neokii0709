@@ -85,6 +85,11 @@ class PathPlanner():
 
   def update(self, sm, pm, CP, VM):
 
+    steerRateCost = ntune_get('steerRateCost')
+    if self.steer_rate_cost_prev != steerRateCost:
+      self.steer_rate_cost_prev = steerRateCost
+      self.setup_mpc()
+
     v_ego = sm['carState'].vEgo
     angle_steers = sm['carState'].steeringAngle
     active = sm['controlsState'].active
@@ -206,15 +211,6 @@ class PathPlanner():
     self.cur_state[0].delta = delta_desired
 
     self.angle_steers_des_mpc = float(math.degrees(delta_desired * VM.sR) + angle_offset)
-
-    steerRateCost = ntune_get('steerRateCost')
-
-    if self.steer_rate_cost_prev != steerRateCost:
-      self.steer_rate_cost_prev = steerRateCost
-
-      self.libmpc.init(MPC_COST_LAT.PATH, MPC_COST_LAT.LANE, MPC_COST_LAT.HEADING, steerRateCost)
-      self.cur_state[0].delta = math.radians(angle_steers - angle_offset) / VM.sR
-
 
     #  Check for infeasable MPC solution
     mpc_nans = any(math.isnan(x) for x in self.mpc_solution[0].delta)
