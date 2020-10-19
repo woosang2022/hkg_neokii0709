@@ -106,7 +106,7 @@ class CarController():
 
     if(actuators.steerAngle < 5.):
       limitParams = SteerLimitParamsLow
-    elif(actuators.steerAngle > 20.):
+    elif(actuators.steerAngle > 15.):
       limitParams = SteerLimitParamsHigh
 
     new_steer = actuators.steer * limitParams.STEER_MAX
