@@ -5,7 +5,8 @@ from selfdrive.car import apply_std_steer_torque_limits
 from selfdrive.car.hyundai.hyundaican import create_lkas11, create_clu11, create_lfa_mfa, \
   create_scc11, create_scc12, create_scc13, create_scc14, \
   create_mdps12, create_spas11, create_spas12, create_ems11
-from selfdrive.car.hyundai.values import Buttons, SteerLimitParams, CAR, FEATURES
+from selfdrive.car.hyundai.values import Buttons, SteerLimitParams, CAR, FEATURES, SteerLimitParamsLow, \
+  SteerLimitParamsHigh
 from opendbc.can.packer import CANPacker
 from selfdrive.config import Conversions as CV
 
@@ -100,13 +101,19 @@ class CarController():
     apply_accel = clip(apply_accel * ACCEL_SCALE, ACCEL_MIN, ACCEL_MAX)
 
     # Steering Torque
-    new_steer = actuators.steer * SteerLimitParams.STEER_MAX
-    apply_steer = apply_std_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorque,
-                                                SteerLimitParams)
-    self.steer_rate_limited = new_steer != apply_steer
 
-    CC.applyAccel = apply_accel
-    CC.applySteer = apply_steer
+    limitParams = SteerLimitParams
+
+    if(actuators.steerAngle < 5.):
+      limitParams = SteerLimitParamsLow
+    elif(actuators.steerAngle > 20.):
+      limitParams = SteerLimitParamsHigh
+
+    new_steer = actuators.steer * limitParams.STEER_MAX
+    apply_steer = apply_std_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorque,
+                                                limitParams)
+
+    self.steer_rate_limited = new_steer != apply_steer
 
     # SPAS limit angle extremes for safety
     if CS.spas_enabled:
@@ -142,6 +149,9 @@ class CarController():
 
     if not lkas_active:
       apply_steer = 0
+
+    CC.applyAccel = apply_accel
+    CC.applySteer = apply_steer
 
     self.apply_accel_last = apply_accel
     self.apply_steer_last = apply_steer
