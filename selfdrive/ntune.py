@@ -155,9 +155,6 @@ class nTune():
     if self.checkValue("steerLimitTimer", 0.5, 3.0, 2.0):
       updated = True
 
-    if self.checkValue("steerMax", 0.5, 3.0, 1.5):
-      updated = True
-
     return updated
 
   def checkValidINDI(self):
@@ -178,9 +175,6 @@ class nTune():
     if self.checkValue("steerLimitTimer", 0.5, 3.0, 0.8):
       updated = True
 
-    if self.checkValue("steerMax", 0.5, 3.0, 1.0):
-      updated = True
-
     return updated
 
   def updateLQR(self):
@@ -191,9 +185,6 @@ class nTune():
     self.lqr.dc_gain = float(self.config["dcGain"])
 
     self.lqr.sat_limit = float(self.config["steerLimitTimer"])
-
-    self.CP.steerMaxBP = [0.0]
-    self.CP.steerMaxV = [float(self.config["steerMax"])]
 
     self.lqr.x_hat = np.array([[0], [0]])
     self.lqr.reset()
@@ -207,9 +198,6 @@ class nTune():
     self.indi.alpha = 1. - DT_CTRL / (self.indi.RC + DT_CTRL)
 
     self.indi.sat_limit = float(self.config["steerLimitTimer"])
-
-    self.CP.steerMaxBP = [0.0]
-    self.CP.steerMaxV = [float(self.config["steerMax"])]
 
     self.indi.reset()
 
