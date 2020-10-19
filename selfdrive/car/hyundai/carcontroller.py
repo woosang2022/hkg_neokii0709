@@ -1,12 +1,13 @@
+import copy
+
 from cereal import car
 from common.realtime import DT_CTRL
-from common.numpy_fast import clip
+from common.numpy_fast import clip, interp
 from selfdrive.car import apply_std_steer_torque_limits
 from selfdrive.car.hyundai.hyundaican import create_lkas11, create_clu11, create_lfa_mfa, \
   create_scc11, create_scc12, create_scc13, create_scc14, \
   create_mdps12, create_spas11, create_spas12, create_ems11
-from selfdrive.car.hyundai.values import Buttons, SteerLimitParams, CAR, FEATURES, SteerLimitParamsLow, \
-  SteerLimitParamsHigh
+from selfdrive.car.hyundai.values import Buttons, SteerLimitParams, CAR, FEATURES
 from opendbc.can.packer import CANPacker
 from selfdrive.config import Conversions as CV
 
@@ -104,12 +105,12 @@ class CarController():
 
     # Steering Torque
 
-    limitParams = SteerLimitParams
+    steerAngle = abs(actuators.steerAngle)
+    limitParams = copy.copy(SteerLimitParams)
 
-    if(actuators.steerAngle < 5.):
-      limitParams = SteerLimitParamsLow
-    elif(actuators.steerAngle > 15.):
-      limitParams = SteerLimitParamsHigh
+    limitParams.STEER_MAX = int(interp(steerAngle, [5., 15.], [255, SteerLimitParams.STEER_MAX]))
+    limitParams.STEER_DELTA_UP = int(interp(steerAngle, [5., 15.], [2, 4]))
+    limitParams.STEER_DELTA_DOWN = int(interp(steerAngle, [5., 15.], [4, 7]))
 
     new_steer = actuators.steer * limitParams.STEER_MAX
     apply_steer = apply_std_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorque,
