@@ -700,7 +700,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
          val_color = nvgRGBA(255, 188, 3, 200);
       }
       if(scene->gpsAccuracy > 1.5) {
-         val_color = nvgRGBA(255, 0, 0, 200);
+         val_color = nvgRGBA(255, 80, 80, 200);
       }
     // gps accuracy is always in meters
     snprintf(val_str, sizeof(val_str), "%.2f", (s->scene.gpsAccuracy));
@@ -717,13 +717,9 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     char val_str[16];
     char uom_str[3];
     NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
-    //show red/orange if gps accuracy is high
-      if(scene->gpsAccuracy > 1.0) {
-         val_color = nvgRGBA(255, 188, 3, 200);
-      }
-      if(scene->gpsAccuracy > 1.5) {
-         val_color = nvgRGBA(255, 0, 0, 200);
-      }
+
+    if(s->scene.satelliteCount < 6)
+         val_color = nvgRGBA(255, 80, 80, 200);
 
     snprintf(val_str, sizeof(val_str), "%d", s->scene.satelliteCount > 0 ? s->scene.satelliteCount : 0);
     snprintf(uom_str, sizeof(uom_str), "");
@@ -826,7 +822,7 @@ static void bb_ui_draw_UI(UIState *s)
 
   const int bb_dmr_w = 180;
   const int bb_dmr_x = scene->viz_rect.x + scene->viz_rect.w - bb_dmr_w - (bdr_is * 2);
-  const int bb_dmr_y = (box_y + (bdr_is * 1.5)) + 40;
+  const int bb_dmr_y = (box_y + (bdr_is * 1.5)) + 20;
 
 #if UI_FEATURE_LEFT
   bb_ui_draw_measures_left(s, bb_dml_x, bb_dml_y, bb_dml_w);
