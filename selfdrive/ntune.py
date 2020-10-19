@@ -126,13 +126,13 @@ class nTune():
   def checkValidCommon(self):
     updated = False
 
-    if self.checkValue("steerRatio", 5.0, 25.0, 13.0):
+    if self.checkValue("steerRatio", 5.0, 25.0, 13.5):
       updated = True
 
     if self.checkValue("steerActuatorDelay", 0.1, 0.8, 0.25):
       updated = True
 
-    if self.checkValue("steerRateCost", 0.1, 1.5, 0.55):
+    if self.checkValue("steerRateCost", 0.1, 1.5, 0.7):
       updated = True
 
     if self.checkValue("cameraOffset", -1.0, 1.0, 0.06):
@@ -149,13 +149,13 @@ class nTune():
     if self.checkValue("ki", 0.0, 0.2, 0.015):
       updated = True
 
-    if self.checkValue("dcGain", 0.0020, 0.0040, 0.00250):
+    if self.checkValue("dcGain", 0.002, 0.004, 0.0028):
       updated = True
 
     if self.checkValue("steerLimitTimer", 0.5, 3.0, 2.0):
       updated = True
 
-    if self.checkValue("steerMax", 0.5, 3.0, 1.3):
+    if self.checkValue("steerMax", 0.5, 3.0, 1.5):
       updated = True
 
     return updated
