@@ -75,7 +75,9 @@ class CarController():
     self.lkas11_cnt = 0
     self.scc12_cnt = 0
 
-    self.last_resume_frame = 0
+    self.resume_cnt = 0
+    self.last_lead_distance = 0
+    self.resume_wait_timer = 0
 
     self.turning_signal_timer = 0
     self.lkas_button_on = True
@@ -208,11 +210,27 @@ class CarController():
     if pcm_cancel_cmd and self.longcontrol:
       can_sends.append(create_clu11(self.packer, frame, CS.scc_bus, CS.clu11, Buttons.CANCEL, clu11_speed))
 
+    # fix auto resume - by neokii
     if CS.out.cruiseState.standstill:
-      # send resume at a max freq of 10Hz
-      if (frame - self.last_resume_frame) * DT_CTRL > 0.1:
-        can_sends.extend([create_clu11(self.packer, frame, CS.scc_bus, CS.clu11, Buttons.RES_ACCEL)] * 20)
-        self.last_resume_frame = frame
+      if self.last_lead_distance == 0:
+        self.last_lead_distance = CS.lead_distance
+        self.resume_cnt = 0
+        self.resume_wait_timer = 0
+
+      elif self.resume_wait_timer > 0:
+        self.resume_wait_timer -= 1
+
+      elif CS.lead_distance != self.last_lead_distance:
+        can_sends.append(create_clu11(self.packer, frame, CS.scc_bus, CS.clu11, Buttons.RES_ACCEL, clu11_speed))
+        self.resume_cnt += 1
+
+        if self.resume_cnt > 5:
+          self.resume_cnt = 0
+          self.resume_wait_timer = int(0.2 / DT_CTRL)
+
+    # reset lead distnce after the car starts moving
+    else:
+      self.last_lead_distance = 0
 
     if CS.mdps_bus:  # send mdps12 to LKAS to prevent LKAS error
       can_sends.append(create_mdps12(self.packer, frame, CS.mdps12))
