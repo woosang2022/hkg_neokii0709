@@ -32,6 +32,7 @@ extern "C"{
 #define UI_FEATURE_RIGHT_BATTERY_LEVEL 1
 #define UI_FEATURE_RIGHT_GPS_ALTITUDE 1
 #define UI_FEATURE_RIGHT_GPS_ACCURACY 1
+#define UI_FEATURE_RIGHT_GPS_SATELLITE 1
 
 
 
@@ -599,7 +600,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   int uom_fontSize = 15;
   int bb_uom_dx =  (int)(bb_w /2 - uom_fontSize*2.5) ;
 
-  //add CPU temperature
+  // add CPU temperature
   if (UI_FEATURE_RIGHT_CPU_TEMP) {
         char val_str[16];
     char uom_str[6];
@@ -632,7 +633,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     bb_ry = bb_y + bb_h;
   }
 
-   //add battery temperature
+   // add battery temperature
   if (UI_FEATURE_RIGHT_BATTERY_TEMP) {
     char val_str[16];
     char uom_str[6];
@@ -656,7 +657,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     bb_ry = bb_y + bb_h;
   }
 
-  //add battery level
+  // add battery level
     if(UI_FEATURE_RIGHT_BATTERY_LEVEL) {
     char val_str[16];
     char uom_str[6];
@@ -674,14 +675,14 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     bb_ry = bb_y + bb_h;
   }
 
-  //add grey panda GPS altitude
+  // add panda GPS altitude
   if (UI_FEATURE_RIGHT_GPS_ALTITUDE) {
     char val_str[16];
     char uom_str[3];
     NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
 
     snprintf(val_str, sizeof(val_str), "%.2f", s->scene.gpsAltitude);
-    snprintf(uom_str, sizeof(uom_str), "m");;
+    snprintf(uom_str, sizeof(uom_str), "m");
     bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "ALTITUDE",
         bb_rx, bb_ry, bb_uom_dx,
         val_color, lab_color, uom_color,
@@ -689,7 +690,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     bb_ry = bb_y + bb_h;
   }
 
-  //add grey panda GPS accuracy
+  // add panda GPS accuracy
   if (UI_FEATURE_RIGHT_GPS_ACCURACY) {
     char val_str[16];
     char uom_str[3];
@@ -703,8 +704,30 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
       }
     // gps accuracy is always in meters
     snprintf(val_str, sizeof(val_str), "%.2f", (s->scene.gpsAccuracy));
-    snprintf(uom_str, sizeof(uom_str), "m");;
+    snprintf(uom_str, sizeof(uom_str), "m");
     bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "GPS PREC",
+        bb_rx, bb_ry, bb_uom_dx,
+        val_color, lab_color, uom_color,
+        value_fontSize, label_fontSize, uom_fontSize );
+    bb_ry = bb_y + bb_h;
+  }
+
+  // add panda GPS satellite
+  if (UI_FEATURE_RIGHT_GPS_SATELLITE) {
+    char val_str[16];
+    char uom_str[3];
+    NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
+    //show red/orange if gps accuracy is high
+      if(scene->gpsAccuracy > 1.0) {
+         val_color = nvgRGBA(255, 188, 3, 200);
+      }
+      if(scene->gpsAccuracy > 1.5) {
+         val_color = nvgRGBA(255, 0, 0, 200);
+      }
+
+    snprintf(val_str, sizeof(val_str), "%d", s->scene.satelliteCount > 0 ? s->scene.satelliteCount : 0);
+    snprintf(uom_str, sizeof(uom_str), "");
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "SATELLITE",
         bb_rx, bb_ry, bb_uom_dx,
         val_color, lab_color, uom_color,
         value_fontSize, label_fontSize, uom_fontSize );
@@ -803,7 +826,7 @@ static void bb_ui_draw_UI(UIState *s)
 
   const int bb_dmr_w = 180;
   const int bb_dmr_x = scene->viz_rect.x + scene->viz_rect.w - bb_dmr_w - (bdr_is * 2);
-  const int bb_dmr_y = (box_y + (bdr_is * 1.5)) + 70;
+  const int bb_dmr_y = (box_y + (bdr_is * 1.5)) + 40;
 
 #if UI_FEATURE_LEFT
   bb_ui_draw_measures_left(s, bb_dml_x, bb_dml_y, bb_dml_w);
