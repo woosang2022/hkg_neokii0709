@@ -108,9 +108,9 @@ class CarController():
     steerAngleAbs = abs(actuators.steerAngle)
     limitParams = copy.copy(SteerLimitParams)
 
-    limitParams.STEER_MAX = int(interp(steerAngleAbs, [5., 15.], [255, SteerLimitParams.STEER_MAX]))
-    limitParams.STEER_DELTA_UP = int(interp(steerAngleAbs, [5., 15.], [2, 4]))
-    limitParams.STEER_DELTA_DOWN = int(interp(steerAngleAbs, [5., 15.], [4, 7]))
+    #limitParams.STEER_MAX = int(interp(steerAngleAbs, [0.], [SteerLimitParams.STEER_MAX]))
+    limitParams.STEER_DELTA_UP = int(interp(steerAngleAbs, [0., 5., 15.], [2, 3, 4]))
+    limitParams.STEER_DELTA_DOWN = int(interp(steerAngleAbs, [0., 5., 15.], [4, 5, 6]))
 
     new_steer = actuators.steer * limitParams.STEER_MAX
     apply_steer = apply_std_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorque,
