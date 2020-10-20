@@ -22,6 +22,9 @@ extern "C"{
 #define UI_FEATURE_LEFT 1
 #define UI_FEATURE_RIGHT 1
 
+#define UI_FEATURE_LEFT_Y 220
+#define UI_FEATURE_RIGHT_Y 20
+
 #define UI_FEATURE_LEFT_REL_DIST 1
 #define UI_FEATURE_LEFT_REL_SPEED 1
 #define UI_FEATURE_LEFT_REAL_STEER 1
@@ -818,11 +821,11 @@ static void bb_ui_draw_UI(UIState *s)
   const UIScene *scene = &s->scene;
   const int bb_dml_w = 180;
   const int bb_dml_x = (scene->viz_rect.x + (bdr_is * 2));
-  const int bb_dml_y = (box_y + (bdr_is * 1.5)) + 220;
+  const int bb_dml_y = (box_y + (bdr_is * 1.5)) + UI_FEATURE_LEFT_Y;
 
   const int bb_dmr_w = 180;
   const int bb_dmr_x = scene->viz_rect.x + scene->viz_rect.w - bb_dmr_w - (bdr_is * 2);
-  const int bb_dmr_y = (box_y + (bdr_is * 1.5)) + 20;
+  const int bb_dmr_y = (box_y + (bdr_is * 1.5)) + UI_FEATURE_RIGHT_Y;
 
 #if UI_FEATURE_LEFT
   bb_ui_draw_measures_left(s, bb_dml_x, bb_dml_y, bb_dml_w);
