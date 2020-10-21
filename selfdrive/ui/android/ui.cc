@@ -227,11 +227,13 @@ int main(int argc, char* argv[]) {
       set_awake(s, false);
     }
 
+#if UI_FEATURE_DASHCAM
     if(s->awake)
     {
         if(dashcam(s, touch_x, touch_y))
             touched = 0;
     }
+#endif
 
     if (touched == 1) {
       set_awake(s, true);
