@@ -16,29 +16,6 @@ extern "C"{
 #include "paint.hpp"
 #include "sidebar.hpp"
 
-
-#define UI_FEATURE_DEBUG 1
-
-#define UI_FEATURE_LEFT 1
-#define UI_FEATURE_RIGHT 1
-
-#define UI_FEATURE_LEFT_Y 220
-#define UI_FEATURE_RIGHT_Y 20
-
-#define UI_FEATURE_LEFT_REL_DIST 1
-#define UI_FEATURE_LEFT_REL_SPEED 1
-#define UI_FEATURE_LEFT_REAL_STEER 1
-#define UI_FEATURE_LEFT_DESIRED_STEER 1
-
-#define UI_FEATURE_RIGHT_CPU_TEMP 1
-#define UI_FEATURE_RIGHT_BATTERY_TEMP 1
-#define UI_FEATURE_RIGHT_BATTERY_LEVEL 1
-#define UI_FEATURE_RIGHT_GPS_ALTITUDE 1
-#define UI_FEATURE_RIGHT_GPS_ACCURACY 1
-#define UI_FEATURE_RIGHT_GPS_SATELLITE 1
-
-
-
 #ifdef QCOM2
 const int vwp_w = 2160;
 #else
@@ -1030,7 +1007,10 @@ static void ui_draw_vision_header(UIState *s) {
 
 static void ui_draw_vision_footer(UIState *s) {
   ui_draw_vision_face(s);
+
+#if UI_FEATURE_BRAKE
   ui_draw_vision_brake(s);
+#endif
 }
 
 void ui_draw_vision_alert(UIState *s, cereal::ControlsState::AlertSize va_size, int va_color,
